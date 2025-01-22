@@ -1,0 +1,86 @@
+const mongoose = require('mongoose');
+
+let leadSchema = mongoose.Schema({
+    freshId                             : { type: String                            , default: null },
+    email                               : { type: String                            , default: '', required: true, unique: true },
+    firstName                           : { type: String                            , default: null },
+    lastName                            : { type: String                            , default: null },
+    phoneNumber                         : { type: String                            , default: null },
+    statusLead                          : { type: String                            , default: null },
+    tags                                : { type: Object                            , default: [] },
+    note                                : { type: String                            , default: '' },
+    addresses                           : { type: Object                            , default: [] },
+    agreeInvest                         : { type: Boolean                           , default: false },	
+    initialBudget                       : { type: String                            , default: null },
+    source                              : { type: String                            , default: null },
+    origin                              : { type: String                            , default: null },
+    formNamePauta                       : { type: String                            , default: null },
+    formLanguage                        : { type: String                            , default: null },
+    marketplaces                        : { type: Object                            , default: null },
+    birthdayDate                        : { type: Date                              , default: null },
+    monthBirthday                       : { type: String                            , default: null },
+    dayBirthday                         : { type: String                            , default: null },
+    address                             : { type: String                            , default: null },
+    country                             : { type: String                            , default: '' },
+    is_dropshipping                     : { type: Boolean                           , default: false },
+    shop                                : { type: mongoose.Schema.Types.ObjectId    , default: null, ref: 'agent_shop' },
+    klaviyo_id                          : { type: String                            , default: null },
+    zipcode                             : { type: String                            , default: null },
+    all_last_contacted                  : { type: Object                            , default: []},
+    all_contacted_via_sales_activity    : { type: Object                            , default: [] },
+    all_contacted_sales_activity_mode   : { type: Object                            , default: [] },
+    all_contacted_mod                   : { type: Object                            , default: [] },
+    stage_updated_time                  : { type: Date                              , default: null },
+    last_contacted                      : { type: Date                              , default: null },
+    last_contacted_via_sales_activity   : { type: Date                              , default: null },
+    last_contacted_sales_activity_mode  : { type: String                            , default: null },
+    last_contacted_mode                 : { type: String                            , default: null },
+    ultima_nota                         : { type: String                            , default: null },
+    all_notas                           : { type: Object                            , default: [] },
+    lead_stage                          : { type: String                            , default: null },
+    lead_source                         : { type: String                            , default: null },
+    territories                         : { type: String                            , default: null },
+    owner                               : { type: String                            , default: null },
+    haveExperience                      : { type: Boolean                           , default: false },
+    experienceYear                      : { type: String                            , default: null }, // years_of_experience
+    physicalStore                       : { type: Boolean                           , default: false },
+    onlineProfile                       : { type: Boolean                           , default: false },
+    targetSell                          : { type: String                            , default: null, enum: { values: ['physical', 'virtual','both', null] } },
+    companyWebsite                      : { type: String                            , default: null }, // cf_company_website_url
+    socialNetwork                       : { type: [{
+        type: { type: String, default: null }, //facebook, instagram, twitter, pinterest, tiktok
+        user: { type: String, default: null },
+        value: { type: Number, default: null }
+    }], default: null },
+    score                               : { type: Number                            , default: 0 },
+    businessSize                        : { type: String                            , default: null, enum: { values: ['1', '2-5', '5-10', '10', null] } },
+    ranking                             : { type: Number                            , default: null },
+    stateScope                          : { type: mongoose.Schema.Types.ObjectId    , default: null, ref: 'agent_state' }, // territorio
+    customerType                        : { type: mongoose.Schema.Types.ObjectId    , default: null, ref: 'Agent_CustomerType' },
+    categoryProduct                     : [{ type: mongoose.Schema.Types.ObjectId   , default: null, ref: 'Agent_CategoryProduct' }],
+    language                            : { type: mongoose.Schema.Types.ObjectId    , default: null, ref: 'agent_language' },
+    typeOfBusiness                      : { type: mongoose.Schema.Types.ObjectId    , default: null, ref: 'Agent_BusinessType' },
+    agentEmail                          : { type: String                            , default: null },
+    agent                               : { type: mongoose.Schema.Types.ObjectId    , default: null, ref: 'agent_user' },
+    matched_at                          : { type: Date                              , default: null },
+    customerApprove                     : { type: Boolean                           , default: false },
+    reasonDisapproveLead                : { type: String                            , default: null },
+    customer_at                         : { type: Date                              , default: null },
+    approveMatch                        : { type: Boolean                           , default: false }, // booleano si aprobo no el match
+    statusAudit                         : { type: String                            , default: 'pending', enum: { values: ['pending', 'approved', 'unresponsived'] } },
+    statusCustomer                      : { type: String                            , default: 'pending', enum: { values: ['pending', 'pre-approved', 'pre-disapproved', 'disapproved', 'approved'], } },
+    preExistsAsCustomer                 : { type: Boolean                           , default: false },
+    freshVTD                            : { type: Boolean                           , default: false },
+    tax_exempt                          : { type: Boolean                           , default: false },
+    
+    checkTermsAndConditions             : { type: Boolean                           , default: false },
+    deleted_by                          : { type: String                            , default: null },
+
+    created_at                          : { type: Date                              , default: Date.now },
+    updated_at                          : { type: Date                              , default: Date.now }, 
+    deleted_at                          : { type: Date                              , default: null }, 
+    deleted                             : { type: Boolean                           , default: false },
+    status                              : { type: String                            , default: 'active' }
+});
+
+module.exports = mongoose.model('agent_lead', leadSchema);

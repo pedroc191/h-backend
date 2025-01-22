@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<title>Document</title>
+</head>
+<body>
+	
+	<input type="radio" name="radio2" id="radio5">
+	<label for="radio4">World Postal Codes</label>
+	<input type="radio" name="radio2" id="radio6">
+	<label for="radio5">AZ Postcodes</label>
+	<input type="radio" name="radio2" id="radio7">
+	<label for="radio5">Get Postalcodes</label>
+	<input type="radio" name="radio2" id="radio8">
+	<label for="radio5">ISO CODE</label>
+	<input type="checkbox" name="radio3" id="checkbox9">
+	<label for="radio3">Multi Place</label>
+	<textarea name="" id="html1" style="height: 300px; width: 49%; display: inline-block;"></textarea>
+	<textarea name="" id="html2" style="height: 300px; width: 49%; display: inline-block;"></textarea>
+	<label for="" style="display: block;">Country Code</label>
+	<input type="text" name="" id="country_code" style="display: block;">
+	<label for="" style="display: block;">State Code</label>
+	<input type="text" name="" id="state_code" style="display: block;">
+	<label for="" style="display: block;">County Code</label>
+	<input type="text" name="" id="county_code" style="display: block;">
+	<input type="radio" name="radio" id="radio1">
+	<label for="radio1">States</label>
+	<input type="radio" name="radio" id="radio2">
+	<label for="radio1">Counties</label>
+	<input type="radio" name="radio" id="radio3">
+	<label for="radio1">Communities</label>
+	<input type="radio" name="radio" id="radio4">
+	<label for="radio1">Places</label>
+	<button class="btn1" style="display: block;">Convert</button>
+	<script>
+		function sortArray( array, data_sort, asc_desc = "asc" ){
+			
+			if( asc_desc === "asc" ){
+				
+				return array.sort( (a, b) => a[data_sort] === b[data_sort] ? 0 : a[data_sort] > b[data_sort] ? 1 : -1 );
+			}
+			else{
+				
+				return array.sort( (a, b) => a[data_sort] === b[data_sort] ? 0 : a[data_sort] <= b[data_sort] ? 1 : -1 );
+			}
+		};
+		$(".btn1").click(function(e){
+			
+			let json = [];
+			if( $("#radio5").is(':checked') ){
+				
+				if( $("#checkbox9").is(':checked') ){
+					
+					json = JSON.parse( $('#html1').val() );
+
+					for ( const [index, item_place] of $( $('#html2').val() ).toArray().filter( (item) => item.nodeName != '#text' ).entries() ) {
+						
+						let places = [];
+						if( $(item_place).find('.letter_container').toArray().length > 0 ){
+							
+							for ( const item_letter of $(item_place).find('.letter_container').toArray()) {
+								
+								for ( const item_html of $(item_letter).find('.units .unit').toArray() ) {
+									
+									let item_json = {
+										name: $(item_html).find('.container .place').text(),
+										zip_codes: []
+									}
+									for ( const item_code of $(item_html).find('.container .code span') ) {
+										
+										item_json.zip_codes.push( $(item_code).text() );
+									}
+									json[index].places.push( item_json );
+								}
+							}
+						}
+						else{
+
+							for (const item_html of $(item_place).find('.unit').toArray() ) {
+								
+								let item_json = {
+									name: $(item_html).find('.container .place').text(),
+									zip_codes: []
+								}
+								for (const item_code of $(item_html).find('.container .code span') ) {
+									
+									item_json.zip_codes.push( $(item_code).text() );
+								}
+								json[index].places.push( item_json );
+							}
+						}
+					}
+				}
+				else if( $( $('#html1').val() ).find('> a').toArray().length > 0 ){
+					
+					for (const item_html of $( $('#html1').val() ).find('a').toArray() ) {
+						
+						let item_json = {
+							name: $(item_html).text(),
+							code: "",
+							country_code: $("#country_code").val()
+						};
+						if( $("#radio1").is(':checked') ){
+							
+							item_json.code = $("#state_code").val();
+							item_json.counties = [];
+							item_json.communities = [];
+							item_json.places = [];
+						}
+						if( $("#radio2").is(':checked') ){
+							
+							item_json.state_code = $("#state_code").val();
+							item_json.communities = [];
+							item_json.places = [];
+						}
+						if( $("#radio3").is(':checked') ){
+							
+							item_json.state_code = $("#state_code").val();
+							item_json.county_code = $("#county_code").val();
+							item_json.places = [];
+						}
+						json.push( item_json );
+					}
+				}
+				else if( $( $('#html1').val() ).find('.letter_container').toArray().length > 0 ){
+					
+					for (const item_letter of $( $('#html1').val() ).find('.letter_container').toArray()) {
+						
+						for (const item_html of $( item_letter ).find('.units .unit').toArray() ) {
+							
+							let item_json = {
+								name: $(item_html).find('.container .place').text(),
+								zip_codes: []
+							}
+							for (const item_code of $(item_html).find('.container .code span') ) {
+								
+								item_json.zip_codes.push( $(item_code).text() );
+							}
+							json.push( item_json );
+						}
+					}
+				}
+				else{
+
+					for (const item_html of $( $('#html1').val() ).find('.unit').toArray() ) {
+						
+						let item_json = {
+							name: $(item_html).find('.container .place').text(),
+							zip_codes: []
+						}
+						for (const item_code of $(item_html).find('.container .code span') ) {
+							
+							item_json.zip_codes.push( $(item_code).text() );
+						}
+						json.push( item_json );
+					}
+				}
+			}
+			else if( $("#radio6").is(':checked') ){
+				
+				for (const item_html of $( $('#html1').val() ).find('tr').toArray() ) {
+					
+					let item_json = {};
+					if( $("#radio4").is(':checked') ){
+						item_json = {
+							name: $(item_html).find("td:nth-child(1) a").text(),
+							zip_codes: []
+						}
+						if( !["None", ""].includes( $(item_html).find("td:nth-child(2)").text() ) ) {
+							
+							item_json.zip_codes = $(item_html).find("td:nth-child(2)").text().split(",");
+						}
+					}
+					else{
+						item_json = {
+							name: $(item_html).find("td a").text(),
+							code: "",
+							country_code: $("#country_code").val()
+						};
+						if( $("#radio1").is(':checked') ){
+							
+							item_json.code = $("#state_code").val();
+							item_json.counties = [];
+							item_json.communities = [];
+							item_json.places = [];
+						}
+						if( $("#radio2").is(':checked') ){
+							
+							item_json.state_code = $("#state_code").val();
+							item_json.communities = [];
+							item_json.places = [];
+						}
+						if( $("#radio3").is(':checked') ){
+							
+							item_json.state_code = $("#state_code").val();
+							item_json.county_code = $("#county_code").val();
+							item_json.places = [];
+						}
+					}
+					json.push( item_json );
+				}
+			}
+			else if( $("#radio7").is(':checked') ){
+				
+				for (const item_html of $( $('#html1').val() ).find('> div').toArray() ) {
+					
+					let item_json = {};
+					if( $("#radio4").is(':checked') ){
+						item_json = {
+							name: $(item_html).find("div a").text(),
+							zip_codes: []
+						}
+						if( !["None", ""].includes( $(item_html).find("div span").text() ) ) {
+							
+							item_json.zip_codes = $(item_html).find("div span").text().split(", ");
+						}
+					}
+					else{
+						item_json = {
+							name: $(item_html).find("div a").text(),
+							code: "",
+							country_code: $("#country_code").val()
+						};
+						if( $("#radio1").is(':checked') ){
+							
+							item_json.code = $("#state_code").val();
+							item_json.counties = [];
+							item_json.communities = [];
+							item_json.places = [];
+						}
+						if( $("#radio2").is(':checked') ){
+							
+							item_json.state_code = $("#state_code").val();
+							item_json.communities = [];
+							item_json.places = [];
+						}
+						if( $("#radio3").is(':checked') ){
+							
+							item_json.state_code = $("#state_code").val();
+							item_json.county_code = $("#county_code").val();
+							item_json.places = [];
+						}
+					}
+					json.push( item_json );
+				}
+			}
+			else if( $("#radio8").is(':checked') ){
+				
+				for (const item_html of $( $('#html1').val() ).find('tr').toArray() ) {
+					
+					let item_json = {
+						name: $(item_html).find("td:nth-child(3)").text(),
+						code: $(item_html).find("td:nth-child(2)").text().replace(`${ $("#country_code").val() }-`, "").replace("*", ""),
+						country_code: $("#country_code").val(),
+						counties: [],
+						communities: [],
+						places: []
+					};
+					json.push( item_json );
+				}
+			}
+			navigator.clipboard.writeText( JSON.stringify( json, undefined, 4 ) );
+			
+			
+		});
+		
+	</script>
+</body>
+</html>
